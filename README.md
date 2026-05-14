@@ -11,6 +11,7 @@ A Gradio app is provided for interactive inference.\
 🔗 **Live Demo:** [GRADE SCHOOL MATH SOLVER APP](
 https://vinh0808-grade-school-math-solver.hf.space/)
 
+> 🐢 The model may take 20–30 seconds to answer because this demo is powered by the very humble free CPU tier on Hugging Face Spaces.
 
 ### Usage
 
