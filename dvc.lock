@@ -1,0 +1,86 @@
+schema: '2.0'
+stages:
+  prepare_data:
+    cmd: python -m scripts.prepare_data
+    deps:
+    - path: scripts/prepare_data.py
+      hash: md5
+      md5: b00a25326bc0f81709528d70a5bf2430
+      size: 607
+    - path: src/config.py
+      hash: md5
+      md5: dff677a1b21738e5424b1ca159a75a5e
+      size: 1722
+    - path: src/data_processing.py
+      hash: md5
+      md5: 4e3999381fc0a5ab512048a3d0418a26
+      size: 3511
+    - path: src/utils.py
+      hash: md5
+      md5: e235ccf5fd992724e324086d49a9bea2
+      size: 944
+    params:
+      params.yaml:
+        data:
+          path: data/
+          name: gsm8k
+          subset: main
+        model:
+          model_checkpoint: Qwen/Qwen2.5-1.5B-Instruct
+          tokenizer_checkpoint: Qwen/Qwen2.5-1.5B-Instruct
+          num_return_sequences: 1
+          temperature: 0
+          batch_size: 16
+    outs:
+    - path: data/
+      hash: md5
+      md5: cf1b2623c37b816db8560f331089abb6.dir
+      size: 4683585
+      nfiles: 10
+  cot:
+    cmd: python -m scripts.cot
+    deps:
+    - path: data/
+      hash: md5
+      md5: cf1b2623c37b816db8560f331089abb6.dir
+      size: 4683585
+      nfiles: 10
+    - path: scripts/cot.py
+      hash: md5
+      md5: 6ee8ef4bff3cb6a318a1126d69806dee
+      size: 1431
+    - path: src/config.py
+      hash: md5
+      md5: dff677a1b21738e5424b1ca159a75a5e
+      size: 1722
+    - path: src/data_processing.py
+      hash: md5
+      md5: 4e3999381fc0a5ab512048a3d0418a26
+      size: 3511
+    - path: src/model.py
+      hash: md5
+      md5: eca6f9af8183bd5b8d5cb1c75b543090
+      size: 6410
+    - path: src/utils.py
+      hash: md5
+      md5: e235ccf5fd992724e324086d49a9bea2
+      size: 944
+    params:
+      params.yaml:
+        cot:
+          num_sample: 1000
+        data:
+          path: data/
+          name: gsm8k
+          subset: main
+        model:
+          model_checkpoint: Qwen/Qwen2.5-1.5B-Instruct
+          tokenizer_checkpoint: Qwen/Qwen2.5-1.5B-Instruct
+          num_return_sequences: 1
+          temperature: 0
+          batch_size: 16
+    outs:
+    - path: metrics/cot_metrics_eval.json
+      hash: md5
+      md5: fc93a262395fe74f8bebb5c9f938b18d
+      size: 70

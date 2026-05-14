@@ -1,0 +1,58 @@
+data:
+  path: "data/"
+  name: "gsm8k"
+  subset: "main"
+
+model:
+  model_checkpoint: "Qwen/Qwen2.5-1.5B-Instruct"
+  tokenizer_checkpoint: "Qwen/Qwen2.5-1.5B-Instruct"
+  num_return_sequences: 1
+  temperature: 0
+  batch_size: 16
+
+cot:
+  num_sample: 1000
+
+directsft:
+  mode: "direct_answer_sft"
+  lora_rank: 16
+  lora_alpha: 64
+  bias: "none"
+  target_modules: "all-linear"
+  task_type: "CAUSAL_LM"
+  output_dir: "directsft"
+  report_to: "tensorboard"
+  gradient_checkpointing: true
+  learning_rate: 3e-4
+  per_device_train_batch_size: 6
+  num_train_epochs: 10
+  logging_steps: 10
+  save_total_limit: 1
+  weight_decay: 0.01
+  save_strategy: "epoch"
+  evaluate_strategy: "epoch"
+  load_best_model_at_end: True
+  metric_for_best_model: "eval_loss"
+  greater_is_better: false
+
+cotsft:
+  mode: "cot_sft"
+  lora_rank: 16
+  lora_alpha: 64
+  bias: "none"
+  target_modules: "all-linear"
+  task_type: "CAUSAL_LM"
+  output_dir: "cotsft"
+  report_to: "tensorboard"
+  gradient_checkpointing: true
+  learning_rate: 2e-4
+  per_device_train_batch_size: 6
+  num_train_epochs: 13
+  logging_steps: 10
+  save_total_limit: 1
+  weight_decay: 0.01
+  save_strategy: "epoch"
+  evaluate_strategy: "epoch"
+  load_best_model_at_end: True
+  metric_for_best_model: "eval_loss"
+  greater_is_better: false

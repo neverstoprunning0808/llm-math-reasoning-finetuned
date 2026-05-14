@@ -1,0 +1,97 @@
+stages:
+  prepare_data:
+    cmd: python -m scripts.prepare_data
+    deps:
+      - scripts/prepare_data.py
+      - src/data_processing.py
+      - src/config.py
+      - src/utils.py
+    params:
+      - data
+      - model
+    outs:
+      - data/
+
+  train_sft:
+    cmd: python -m scripts.sft
+    deps:
+      - scripts/sft.py
+      - src/model.py
+      - src/data_processing.py
+      - src/config.py
+      - src/utils.py
+      - data/
+    params:
+      - directsft
+      - model
+      - data
+    outs:
+      - directsft/adapter_config.json
+      - directsft/adapter_model.safetensors
+
+  cot:
+    cmd: python -m scripts.cot
+    deps:
+      - scripts/cot.py
+      - src/model.py
+      - src/data_processing.py
+      - src/config.py
+      - src/utils.py
+      - data/
+    params:
+      - cot
+      - model
+      - data
+    metrics:
+      - metrics/cot_metrics_eval.json
+
+  train_cot_sft:
+    cmd: python -m scripts.cot_sft
+    deps:
+      - scripts/cot_sft.py
+      - src/model.py
+      - src/data_processing.py
+      - src/config.py
+      - src/utils.py
+      - data/
+    params:
+      - cotsft
+      - model
+      - data
+    outs:
+      - cotsft/adapter_config.json
+      - cotsft/adapter_model.safetensors
+
+  evaluate_direct_sft:
+    cmd: python -m scripts.evaluate_direct_sft
+    deps:
+      - scripts/evaluate_direct_sft.py
+      - src/model.py
+      - src/utils.py
+      - src/config.py
+      - data/
+      - directsft/adapter_config.json
+      - directsft/adapter_model.safetensors
+    params:
+      - directsft
+      - model
+      - data
+    metrics:
+      - metrics/directsft_metrics_eval.json
+
+  evaluate_cot_sft:
+    cmd: python -m scripts.evaluate_cot_sft
+    deps:
+      - scripts/evaluate_cot_sft.py
+      - src/model.py
+      - src/utils.py
+      - src/config.py
+      - data/
+      - cotsft/adapter_config.json
+      - cotsft/adapter_model.safetensors
+    params:
+      - cotsft
+      - model
+      - data
+    metrics:
+      - metrics/cotsft_metrics_eval.json
