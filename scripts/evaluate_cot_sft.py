@@ -2,6 +2,7 @@ from src import AppConfig, LLMModel, load_config, accuracy, extract_answer, form
 from datasets import load_from_disk
 from peft import PeftModel
 import os
+import json
 
 def test_direct_sft_model(config: AppConfig):
     data = load_from_disk(config.data.path)
@@ -43,7 +44,7 @@ def test_direct_sft_model(config: AppConfig):
     os.makedirs(os.path.dirname(metrics_path), exist_ok=True)
 
     with open(metrics_path, "w") as f:
-        metrics.dump(metrics, f, indent=4)
+        json.dump(metrics, f, indent=4)
 
 
 if __name__ == "__main__":

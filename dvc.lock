@@ -84,3 +84,283 @@ stages:
       hash: md5
       md5: fc93a262395fe74f8bebb5c9f938b18d
       size: 70
+  train_sft:
+    cmd: python -m scripts.sft
+    deps:
+    - path: data/
+      hash: md5
+      md5: 133bb2d6f79e7404bb6cdc5ea62f1eed.dir
+      size: 34110401
+      nfiles: 12
+    - path: scripts/sft.py
+      hash: md5
+      md5: fba3689f4aac354de1119ebcac1e4df1
+      size: 3295
+    - path: src/config.py
+      hash: md5
+      md5: dff677a1b21738e5424b1ca159a75a5e
+      size: 1722
+    - path: src/data_processing.py
+      hash: md5
+      md5: 4e3999381fc0a5ab512048a3d0418a26
+      size: 3511
+    - path: src/model.py
+      hash: md5
+      md5: eca6f9af8183bd5b8d5cb1c75b543090
+      size: 6410
+    - path: src/utils.py
+      hash: md5
+      md5: e235ccf5fd992724e324086d49a9bea2
+      size: 944
+    params:
+      params.yaml:
+        data:
+          path: data/
+          name: gsm8k
+          subset: main
+        directsft:
+          mode: direct_answer_sft
+          lora_rank: 16
+          lora_alpha: 64
+          bias: none
+          target_modules: all-linear
+          task_type: CAUSAL_LM
+          output_dir: directsft
+          report_to: tensorboard
+          gradient_checkpointing: true
+          learning_rate: 0.0003
+          per_device_train_batch_size: 6
+          num_train_epochs: 10
+          logging_steps: 10
+          save_total_limit: 1
+          weight_decay: 0.01
+          save_strategy: epoch
+          evaluate_strategy: epoch
+          load_best_model_at_end: true
+          metric_for_best_model: eval_loss
+          greater_is_better: false
+        model:
+          model_checkpoint: Qwen/Qwen2.5-1.5B-Instruct
+          tokenizer_checkpoint: Qwen/Qwen2.5-1.5B-Instruct
+          num_return_sequences: 1
+          temperature: 0
+          batch_size: 16
+    outs:
+    - path: directsft/adapter_config.json
+      hash: md5
+      md5: 9ef4bb919527c4296e0e69b75205990b
+      size: 1104
+    - path: directsft/adapter_model.safetensors
+      hash: md5
+      md5: b56db68d7778a278eedecb4bdb271842
+      size: 73911112
+  evaluate_direct_sft:
+    cmd: python -m scripts.evaluate_direct_sft
+    deps:
+    - path: data/
+      hash: md5
+      md5: 133bb2d6f79e7404bb6cdc5ea62f1eed.dir
+      size: 34110401
+      nfiles: 12
+    - path: directsft/adapter_config.json
+      hash: md5
+      md5: 9ef4bb919527c4296e0e69b75205990b
+      size: 1104
+    - path: directsft/adapter_model.safetensors
+      hash: md5
+      md5: b56db68d7778a278eedecb4bdb271842
+      size: 73911112
+    - path: scripts/evaluate_direct_sft.py
+      hash: md5
+      md5: 026e7a0002a78bd28aa13d08234cd5ac
+      size: 1434
+    - path: src/config.py
+      hash: md5
+      md5: dff677a1b21738e5424b1ca159a75a5e
+      size: 1722
+    - path: src/model.py
+      hash: md5
+      md5: eca6f9af8183bd5b8d5cb1c75b543090
+      size: 6410
+    - path: src/utils.py
+      hash: md5
+      md5: e235ccf5fd992724e324086d49a9bea2
+      size: 944
+    params:
+      params.yaml:
+        data:
+          path: data/
+          name: gsm8k
+          subset: main
+        directsft:
+          mode: direct_answer_sft
+          lora_rank: 16
+          lora_alpha: 64
+          bias: none
+          target_modules: all-linear
+          task_type: CAUSAL_LM
+          output_dir: directsft
+          report_to: tensorboard
+          gradient_checkpointing: true
+          learning_rate: 0.0003
+          per_device_train_batch_size: 6
+          num_train_epochs: 10
+          logging_steps: 10
+          save_total_limit: 1
+          weight_decay: 0.01
+          save_strategy: epoch
+          evaluate_strategy: epoch
+          load_best_model_at_end: true
+          metric_for_best_model: eval_loss
+          greater_is_better: false
+        model:
+          model_checkpoint: Qwen/Qwen2.5-1.5B-Instruct
+          tokenizer_checkpoint: Qwen/Qwen2.5-1.5B-Instruct
+          num_return_sequences: 1
+          temperature: 0
+          batch_size: 16
+    outs:
+    - path: metrics/directsft_metrics_eval.json
+      hash: md5
+      md5: d3277cc406751a9cdf55f9352926261b
+      size: 83
+  train_cot_sft:
+    cmd: python -m scripts.cot_sft
+    deps:
+    - path: data/
+      hash: md5
+      md5: 555457c521de952112d8971e981030de.dir
+      size: 34110401
+      nfiles: 12
+    - path: scripts/cot_sft.py
+      hash: md5
+      md5: a1c09f92959af15c2504def0537c4a2e
+      size: 3219
+    - path: src/config.py
+      hash: md5
+      md5: dff677a1b21738e5424b1ca159a75a5e
+      size: 1722
+    - path: src/data_processing.py
+      hash: md5
+      md5: 4e3999381fc0a5ab512048a3d0418a26
+      size: 3511
+    - path: src/model.py
+      hash: md5
+      md5: eca6f9af8183bd5b8d5cb1c75b543090
+      size: 6410
+    - path: src/utils.py
+      hash: md5
+      md5: e235ccf5fd992724e324086d49a9bea2
+      size: 944
+    params:
+      params.yaml:
+        cotsft:
+          mode: cot_sft
+          lora_rank: 16
+          lora_alpha: 64
+          bias: none
+          target_modules: all-linear
+          task_type: CAUSAL_LM
+          output_dir: cotsft
+          report_to: tensorboard
+          gradient_checkpointing: true
+          learning_rate: 0.0002
+          per_device_train_batch_size: 6
+          num_train_epochs: 13
+          logging_steps: 10
+          save_total_limit: 1
+          weight_decay: 0.01
+          save_strategy: epoch
+          evaluate_strategy: epoch
+          load_best_model_at_end: true
+          metric_for_best_model: eval_loss
+          greater_is_better: false
+        data:
+          path: data/
+          name: gsm8k
+          subset: main
+        model:
+          model_checkpoint: Qwen/Qwen2.5-1.5B-Instruct
+          tokenizer_checkpoint: Qwen/Qwen2.5-1.5B-Instruct
+          num_return_sequences: 1
+          temperature: 0
+          batch_size: 16
+    outs:
+    - path: cotsft/adapter_config.json
+      hash: md5
+      md5: 7481a0f309b240205506f78681adf80b
+      size: 1104
+    - path: cotsft/adapter_model.safetensors
+      hash: md5
+      md5: a68484c51b03511fa9e35e7a14e6725b
+      size: 73911112
+  evaluate_cot_sft:
+    cmd: python -m scripts.evaluate_cot_sft
+    deps:
+    - path: cotsft/adapter_config.json
+      hash: md5
+      md5: 7481a0f309b240205506f78681adf80b
+      size: 1104
+    - path: cotsft/adapter_model.safetensors
+      hash: md5
+      md5: a68484c51b03511fa9e35e7a14e6725b
+      size: 73911112
+    - path: data/
+      hash: md5
+      md5: 555457c521de952112d8971e981030de.dir
+      size: 34110401
+      nfiles: 12
+    - path: scripts/evaluate_cot_sft.py
+      hash: md5
+      md5: 77eb1c892ddc38284bd28ccb3c563a86
+      size: 1519
+    - path: src/config.py
+      hash: md5
+      md5: dff677a1b21738e5424b1ca159a75a5e
+      size: 1722
+    - path: src/model.py
+      hash: md5
+      md5: eca6f9af8183bd5b8d5cb1c75b543090
+      size: 6410
+    - path: src/utils.py
+      hash: md5
+      md5: e235ccf5fd992724e324086d49a9bea2
+      size: 944
+    params:
+      params.yaml:
+        cotsft:
+          mode: cot_sft
+          lora_rank: 16
+          lora_alpha: 64
+          bias: none
+          target_modules: all-linear
+          task_type: CAUSAL_LM
+          output_dir: cotsft
+          report_to: tensorboard
+          gradient_checkpointing: true
+          learning_rate: 0.0002
+          per_device_train_batch_size: 6
+          num_train_epochs: 13
+          logging_steps: 10
+          save_total_limit: 1
+          weight_decay: 0.01
+          save_strategy: epoch
+          evaluate_strategy: epoch
+          load_best_model_at_end: true
+          metric_for_best_model: eval_loss
+          greater_is_better: false
+        data:
+          path: data/
+          name: gsm8k
+          subset: main
+        model:
+          model_checkpoint: Qwen/Qwen2.5-1.5B-Instruct
+          tokenizer_checkpoint: Qwen/Qwen2.5-1.5B-Instruct
+          num_return_sequences: 1
+          temperature: 0
+          batch_size: 16
+    outs:
+    - path: metrics/cotsft_metrics_eval.json
+      hash: md5
+      md5: c218545af9cbe7177e968e13891d644c
+      size: 82

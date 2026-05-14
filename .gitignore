@@ -1,4 +1,6 @@
 /data
 /cotsft
 /directsft
+gradio/
+
 __pycache__

@@ -1,6 +1,36 @@
 # GSM8K Math Reasoning — LLM Fine-tuning
 
-Experiments on fine-tuning a small LLM for grade-school math reasoning using the [GSM8K](https://huggingface.co/datasets/openai/gsm8k) dataset. Three approaches are implemented and compared: Chain-of-Thought (CoT) prompting, Direct Answer SFT, and CoT SFT.
+Experiments on fine-tuning a small LLM, [Qwen/Qwen2.5-1.5B-Instruct](https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct), for grade-school math reasoning using the [GSM8K](https://huggingface.co/datasets/openai/gsm8k) dataset. Three approaches are implemented and compared: Chain-of-Thought (CoT) prompting, Direct Answer SFT, and CoT SFT.
+
+
+---
+
+## Gradio Demo
+
+A Gradio app is provided for interactive inference.\
+🔗 **Live Demo:** [GRADE SCHOOL MATH SOLVER APP](
+https://vinh0808-grade-school-math-solver.hf.space/)
+
+
+### Usage
+
+Enter a grade-school level math problem in text box and the model will explain how to do it step-by-step.
+
+### ⭐ Grade-school level math problem samples ⭐
+
+#### Question 1: 
+> "Weng earns $12 an hour for babysitting. Yesterday, she just did 50 minutes of babysitting. How much did she earn?"
+---
+
+#### Question 2: 
+> “James writes a 3-page letter to 2 different friends twice a week. How many pages does he write a year?”
+
+---
+
+#### Question 3: 
+> "Randy has 60 mango trees on his farm. He also has 5 less than half as many coconut trees as mango trees. How many trees does Randy have in all on his farm?"
+
+---
 
 ---
 
@@ -54,7 +84,32 @@ python -m scripts.prepare_data
 
 ---
 
-## Approaches
+## DVC (Pipeline) Approaches
+
+### 1. Chain-of-Thought (CoT) Prompting
+The model is given a system prompt and few-shot examples that demonstrate step-by-step reasoning before the final answer.
+
+```bash
+dvc repro cot
+```
+
+### 2. Direct Answer SFT
+Fine-tune the model with LoRA to directly output the final integer answer, without reasoning steps.
+
+```bash
+dvc repro evaluate_direct_sft
+```
+
+### 3. CoT SFT
+Fine-tune the model with LoRA on full chain-of-thought reasoning (steps + `#### answer`).
+
+```bash
+dvc repro evaluate_cot_sft
+```
+
+---
+
+## Manual Approaches
 
 ### 1. Chain-of-Thought (CoT) Prompting
 The model is given a system prompt and few-shot examples that demonstrate step-by-step reasoning before the final answer.
@@ -78,7 +133,6 @@ Fine-tune the model with LoRA on full chain-of-thought reasoning (steps + `#### 
 python -m scripts.cot_sft 
 python -m scripts.evaluate_cot_sft
 ```
-
 
 ---
 
@@ -114,3 +168,7 @@ All hyperparameters are managed in `params.yaml`:
 - **Label masking** — the question tokens are masked with `-100` so loss is only computed on the answer portion
 - **`apply_chat_template`** — uses the model's built-in chat format for consistent instruction following
 - **Answer extraction** — parses `#### <number>` from model output; falls back to the last integer in the output if `####` is not present
+
+## Preview
+
+![Weather Assistant UI](z_output.png)
